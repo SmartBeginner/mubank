@@ -1,0 +1,13 @@
+{
+  "/api": {
+    "target": "http://37.187.219.39:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": {
+      "Origin": "http://mubank.org"
+    },
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

@@ -35,4 +35,16 @@ export class Data {
   getDeposits(): Observable<any> {
     return this.httpClient.get(this.apiURL + 'users/deposits', this.getHttpOptions());
   }
+
+  getAllUsers(): Observable<any> {
+    return this.httpClient.get(this.apiURL + 'users', this.getHttpOptions());
+  }
+
+  getAllTransactions(): Observable<any> {
+    return this.httpClient.get(this.apiURL + 'deposits', this.getHttpOptions());
+  }
+
+  createUser(obj: { login: string; password: string; role: 'USER' | 'ADMIN' }): Observable<any> {
+    return this.httpClient.post(this.apiURL + 'auth/register', obj, this.getHttpOptions());
+  }
 }

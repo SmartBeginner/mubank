@@ -1,0 +1,108 @@
+<main class="admin-page">
+  <section class="admin-shell">
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Central administrativa</p>
+        <h1>Visão geral do MUBank</h1>
+        <p>Acompanhe a operação financeira e gerencie os acessos em um só lugar.</p>
+      </div>
+      <button type="button" class="refresh-button" (click)="loadDashboard()" [disabled]="loading()">
+        {{ loading() ? 'Atualizando…' : 'Atualizar dados' }}
+      </button>
+    </header>
+
+    @if (feedback()) {
+      <div class="feedback" [class.error]="feedbackType() === 'error'" role="status">{{ feedback() }}</div>
+    }
+
+    <section class="metric-grid" aria-label="Indicadores financeiros">
+      <article class="metric-card primary">
+        <span>Volume movimentado</span>
+        <strong>{{ totalVolume() | number:'1.0-0' }} MuCoins</strong>
+        <small>Somatório das transferências registradas</small>
+      </article>
+      <article class="metric-card">
+        <span>Movimentações</span>
+        <strong>{{ transactions().length }}</strong>
+        <small>Saídas e entradas concluídas</small>
+      </article>
+      <article class="metric-card">
+        <span>Ticket médio</span>
+        <strong>{{ averageTicket() | number:'1.0-1' }} MuCoins</strong>
+        <small>Média por transação</small>
+      </article>
+      <article class="metric-card">
+        <span>Usuários</span>
+        <strong>{{ users().length }}</strong>
+        <small>Contas cadastradas</small>
+      </article>
+    </section>
+
+    <div class="admin-grid">
+      <section class="panel registration-panel">
+        <div class="panel-heading">
+          <div><span class="panel-kicker">Acessos</span><h2>Cadastrar usuário</h2></div>
+        </div>
+        <form [formGroup]="userForm" (ngSubmit)="createUser()">
+          <label for="admin-login">Nome de acesso</label>
+          <input id="admin-login" type="text" formControlName="login" placeholder="Ex.: jogador123" autocomplete="off">
+          @if (userForm.controls.login.touched && userForm.controls.login.invalid) { <small class="field-error">Informe pelo menos 3 caracteres.</small> }
+
+          <label for="admin-password">Senha temporária</label>
+          <input id="admin-password" type="password" formControlName="password" placeholder="Mínimo de 6 caracteres" autocomplete="new-password">
+          @if (userForm.controls.password.touched && userForm.controls.password.invalid) { <small class="field-error">Informe pelo menos 6 caracteres.</small> }
+
+          <label for="admin-role">Perfil</label>
+          <select id="admin-role" formControlName="role">
+            <option value="USER">Usuário</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+          <button type="submit" class="submit-button">Criar conta</button>
+        </form>
+      </section>
+
+      <section class="panel users-panel">
+        <div class="panel-heading">
+          <div><span class="panel-kicker">Base ativa</span><h2>Usuários recentes</h2></div>
+          <span class="count-pill">{{ users().length }} contas</span>
+        </div>
+        <div class="user-list">
+          @for (user of users().slice(0, 6); track user.name) {
+            <div class="user-row">
+              <span class="avatar">{{ user.name.charAt(0).toUpperCase() }}</span>
+              <div><strong>{{ user.name }}</strong><small>Desde {{ user.entryDate | date:'dd/MM/yyyy' }}</small></div>
+              <b>{{ user.amount | number:'1.0-0' }} <small>MuCoins</small></b>
+            </div>
+          } @empty { <p class="empty-state">Nenhum usuário encontrado.</p> }
+        </div>
+      </section>
+    </div>
+
+    <section class="panel transactions-panel">
+      <div class="panel-heading transaction-heading">
+        <div><span class="panel-kicker">Fluxo financeiro</span><h2>Saques e depósitos</h2></div>
+        <div class="table-tools">
+          <input type="search" aria-label="Buscar movimentação" placeholder="Buscar pagador ou favorecido" (input)="setSearch($event)">
+          <span class="highlight">Maior: {{ largestMovement() | number:'1.0-0' }} MuCoins</span>
+        </div>
+      </div>
+      <p class="movement-note">Cada transferência representa um saque para o pagador e um depósito para o favorecido.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Data</th><th>Movimentação</th><th>Origem</th><th>Destino</th><th>Descrição</th><th>Valor</th></tr></thead>
+          <tbody>
+            @for (item of filteredTransactions(); track $index) {
+              <tr>
+                <td>{{ item.date | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td><span class="movement-badge">Saque → Depósito</span></td>
+                <td>{{ item.payer }}</td><td>{{ item.payee }}</td>
+                <td>{{ item.description || '—' }}</td>
+                <td class="amount">{{ item.amount | number:'1.0-0' }} MuCoins</td>
+              </tr>
+            } @empty { <tr><td colspan="6" class="empty-state">Nenhuma movimentação encontrada.</td></tr> }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+</main>

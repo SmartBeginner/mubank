@@ -1,9 +1,7 @@
 import { Component, inject, PLATFORM_ID, signal, WritableSignal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Data } from '../data';
-import { platform } from 'node:os';
 import { Router } from '@angular/router';
-import {routes} from "../app.routes";
 import currentUser from '../../entities/currentUser';
 import { DepositView } from '../deposit-view/deposit-view';
 

@@ -28,7 +28,10 @@ export class Login {
         const tokenValue = response.token;
         isPlatformBrowser(this.platformId) ? localStorage.setItem('token', tokenValue) : '';
         isPlatformBrowser(this.platformId) ? localStorage.setItem('name', <string>this.loginForm.value.login) : '';
-        this.router.navigate(['/profile']);
+        this.data.getAllTransactions().subscribe({
+          next: () => this.router.navigate(['/admin']),
+          error: () => this.router.navigate(['/profile']),
+        });
 
       },
       error: (err) => {
@@ -36,8 +39,5 @@ export class Login {
       alert('Usuário ou senha inválidos!');
       }
   });
-
-
-    this.data.login(this.loginForm.value);
   }
 }

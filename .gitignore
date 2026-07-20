@@ -8,6 +8,8 @@
 
 # Node
 /node_modules
+/node_modules.corrupt-*
+/.codex-devserver.*.log
 npm-debug.log
 yarn-error.log
 

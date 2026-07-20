@@ -6,11 +6,14 @@ import Profile from './profile/profile';
 import { Validate } from './validate/validate';
 
 export const serverRoutes: ServerRoute[] = [
+  { path: 'profile',
+    renderMode: RenderMode.Client
+  },
+  { path: 'admin',
+    renderMode: RenderMode.Client
+  },
   {
     path: '**',
     renderMode: RenderMode.Prerender
-  },
-  { path: 'profile',
-    renderMode: RenderMode.Client
   },
 ];

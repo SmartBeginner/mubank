@@ -1,4 +1,5 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, inject, PLATFORM_ID, signal, WritableSignal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Data } from '../data';
 import currentUser from '../../entities/currentUser';
 import { routes } from '../app.routes';
@@ -12,11 +13,17 @@ import { Router } from '@angular/router';
 })
 export class Header {
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   private data: Data = inject(Data);
   signalUserProfile: WritableSignal<String> = signal<String>('');
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.signalUserProfile.set('login');
+      return;
+    }
+
     this.data.getCurrentUserData().subscribe({
       next: (response: any) => {
         this.signalUserProfile.update(() => response.name)

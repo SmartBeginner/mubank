@@ -68,7 +68,8 @@
               "buildTarget": "mubank:build:production"
             },
             "development": {
-              "buildTarget": "mubank:build:development"
+              "buildTarget": "mubank:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
